@@ -13,6 +13,24 @@ def calculate_mac(pattern, filter_):
 
     return float(score)
 
+def classify_scores(score_cross, score_x, epsilon) -> str:
+    if abs(score_cross - score_x) < epsilon:
+        return "UNDECIDED"
+    elif score_cross > score_x:
+        return "Cross"
+    else:
+        return "X"
+
+def normalize_label(raw_label) -> str:
+    if raw_label == "+":
+        return "Cross"
+    elif raw_label.lower() == "cross":
+        return "Cross"
+    elif raw_label.lower() == "x":
+        return "X"
+    else:
+        raise ValueError("Invalid label")
+
 def main():
     cross = [
         [0, 1, 0],
