@@ -1,5 +1,6 @@
 import json
 
+# MAC
 def calculate_mac(pattern, filter_):
     score = 0
 
@@ -15,6 +16,7 @@ def calculate_mac(pattern, filter_):
 
     return float(score)
 
+# 판정
 def classify_scores(score_cross, score_x, epsilon) -> str:
     if abs(score_cross - score_x) < epsilon:
         return "UNDECIDED"
@@ -23,6 +25,7 @@ def classify_scores(score_cross, score_x, epsilon) -> str:
     else:
         return "X"
 
+# 라벨 정규화
 def normalize_label(raw_label) -> str:
     if not isinstance(raw_label, str):
         raise ValueError(f"Invalid label: {raw_label}")
@@ -41,6 +44,15 @@ def load_json(path) -> dict:
         data = json.load(file)
 
     return data
+
+# json 구조 검사
+def validate_data_json(data) -> None:
+    if type(data) != dict:
+        raise ValueError(f"{data}의 형식이 잘못되었습니다. type: {type(data)}")
+    elif not "filters" in data or not "patterns" in data:
+        raise ValueError(f"data에 filters key 또는 patterns key가 없습니다.")
+    elif type(data["filters"]) != dict or type(data["patterns"]) != dict:
+        raise ValueError(f"filters 또는 patterns value type이 잘못되었습니다. filters value: {type(data["filters"])}, pattern value: {type(data['patterns'])}")
 
 def main():
     cross = [
