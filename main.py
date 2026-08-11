@@ -191,6 +191,27 @@ def summarize_results(results) -> dict:
 
 # 사용자 입력 받아 matrix 구성 함수
 def read_matrix(matrix_name, n=3) -> list[list]:
+    matrix = []
+
+    for row in range(n):
+        while True:
+            tokens = input(f"matrix name: {matrix_name}, 현재 row: {row + 1}/{n}\n").split()
+
+            if len(tokens) == n:
+                try:
+                    numeric_rows = [float(number) for number in tokens]
+                except ValueError:
+                    print(f"{tokens}에 형 변환이 안되는 문자열이 있습니다.")
+                    continue
+
+                matrix.append(numeric_rows)
+                break
+
+            else:
+                print(f"token 수: {len(tokens)}, n: {n}의 결과가 다르기 때문에 실패입니다.")
+                continue
+
+    return matrix
 
 # 평균 시간(ms) 측정 함수
 def measure_mac_average_ms(pattern, filter_, repeats=10) -> float:
