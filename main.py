@@ -22,6 +22,9 @@ def classify_scores(score_cross, score_x, epsilon) -> str:
         return "X"
 
 def normalize_label(raw_label) -> str:
+    if not isinstance(raw_label, str):
+        raise ValueError(f"Invalid label: {raw_label}")
+
     if raw_label == "+":
         return "Cross"
     elif raw_label.lower() == "cross":
