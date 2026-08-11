@@ -54,6 +54,23 @@ def validate_data_json(data) -> None:
     elif type(data["filters"]) != dict or type(data["patterns"]) != dict:
         raise ValueError(f"filters 또는 patterns value type이 잘못되었습니다. filters value: {type(data["filters"])}, pattern value: {type(data['patterns'])}")
 
+# case_id(size_13_1) n값 반환 함수
+def parse_pattern_size(case_id) -> int:
+    split_case_id = case_id.split("_")
+    if len(split_case_id) != 3:
+        raise ValueError(f"case_id의 형식이 잘못되었습니다. {case_id}")
+    elif split_case_id[0] != "size":
+        raise ValueError(f"case_id의 형식이 잘못되었습니다. {case_id}")
+
+    try:
+        n = int(split_case_id[1])
+        int(split_case_id[2])
+    except ValueError:
+        raise ValueError(f"case_id 형식 n과 idx가 잘못되었습니다. {case_id}")
+
+    return n
+
+
 def main():
     cross = [
         [0, 1, 0],
