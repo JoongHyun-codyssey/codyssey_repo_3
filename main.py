@@ -227,6 +227,9 @@ def measure_performance_sizes(sizes=(3, 5, 13, 25), repeats=10) -> list[dict]:
 
 # 평균 시간(ms) 측정 시 matrix 구성 함수
 def create_benchmark_matrix(n) -> list[list]:
+    matrix = [[1.0 for _ in range(n)] for _ in range(n)]
+
+    return matrix
 
 # 결과 출력 함수
 def print_batch_report(results, summary, performance_rows) -> None:
