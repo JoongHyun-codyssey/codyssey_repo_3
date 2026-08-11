@@ -70,6 +70,23 @@ def parse_pattern_size(case_id) -> int:
 
     return n
 
+# matrix 검증 함수 (NxN, row list, column list, column value)
+def validate_square_matrix(matrix, expected_n, matrix_name) -> None:
+    if type(matrix) != list:
+        raise ValueError(f"{matrix_name}이 list가 아니기 때문에 {expected_n}과 비교할 수 없습니다.")
+    elif len(matrix) != expected_n:
+        raise ValueError(f"{matrix_name}의 row 수가 {expected_n}과 일치하지 않습니다."
+                         f"matrix_row: {len(matrix)}")
+
+    for i in range(len(matrix)):
+        if type(matrix[i]) != list:
+            raise ValueError(f"{matrix_name} list가 type list가 아닌 row가 존재합니다.")
+        elif len(matrix[i]) != expected_n:
+            raise ValueError(f"{matrix_name} row가 {expected_n}과 일치하지 않습니다.")
+        for j in range(len(matrix[i])):
+            if type(matrix[i][j]) not in (int, float):
+                raise ValueError(f"{matrix_name}의 Row index: {i}, column index: {j}, value: {matrix[i][j]}의 type이 {type(matrix[i][j])}이기 때문에 검증에 실패했습니다.")
+
 
 def main():
     cross = [
