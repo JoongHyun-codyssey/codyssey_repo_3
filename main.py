@@ -165,6 +165,32 @@ def analyze_batch(data) -> list[dict]:
 
     return results
 
+# 결과 요약 반환 함수
+def summarize_results(results) -> dict:
+
+# 사용자 입력 받아 matrix 구성 함수
+def read_matrix(matrix_name, n=3) -> list[list]:
+
+# 평균 시간(ms) 측정 함수
+def measure_mac_average_ms(pattern, filter_, repeats=10) -> float:
+
+# 성능 분석 함수
+def measure_performance_sizes(sizes=(3, 5, 13, 25), repeats=10) -> list[dict]:
+
+# 평균 시간(ms) 측정 시 matrix 구성 함수
+def create_benchmark_matrix(n) -> list[list]:
+
+# 결과 출력 함수
+def print_batch_report(results, summary, performance_rows) -> None:
+
+# 성능 분석 결과 출력 함수
+def print_performance_table(performance_rows) -> None
+
+# 모드 1번 선택시 호출되는 함수
+def run_manual_mode() -> None:
+
+# 모드 2번 선택시 호출되는 함수
+def run_json_mode(path="data.json") -> None:
 
 def main():
     cross = [
