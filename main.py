@@ -224,6 +224,16 @@ def measure_mac_average_ms(pattern, filter_, repeats=10) -> float:
     return ((end - start) / repeats) * 1000
 # 성능 분석 함수
 def measure_performance_sizes(sizes=(3, 5, 13, 25), repeats=10) -> list[dict]:
+    performance_rows = []
+    for n in sizes:
+        pattern = create_benchmark_matrix(n)
+        filter_ = create_benchmark_matrix(n)
+        average_ms = measure_mac_average_ms(pattern=pattern, filter_=filter_, repeats=repeats)
+        performance_rows.append({
+            "n": n,
+            "average_ms": average_ms,
+            "operation_count": n ** 2
+        })
 
 # 평균 시간(ms) 측정 시 matrix 구성 함수
 def create_benchmark_matrix(n) -> list[list]:
