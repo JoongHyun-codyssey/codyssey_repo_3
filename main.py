@@ -203,6 +203,34 @@ def create_benchmark_matrix(n) -> list[list]:
 
 # 결과 출력 함수
 def print_batch_report(results, summary, performance_rows) -> None:
+    for result in results:
+        print(
+            f"case_id: {result['case_id']} | "
+            f"score_cross: {result['score_cross']} | "
+            f"score_x: {result['score_x']} | "
+            f"prediction: {result['prediction']} | "
+            f"expected: {result['expected']} | "
+            f"status: {result['status']}"
+        )
+        if result["reason"] != None:
+            print(
+                f"reason: {result['reason']}"
+            )
+
+        print_performance_table(performance_rows=performance_rows)
+
+        print(
+            f"total: {summary['total']} | "
+            f"passed: {summary['passed']} | "
+            f"failed: {summary['failed']}"
+        )
+
+        if len(summary["failure_cases"]) != 0:
+            for failure in summary["failure_cases"]:
+                print(
+                    f"failure_cases: {failure['case_id']} | "
+                    f"failure_cases_reason: {failure['reason']}"
+                )
 
 # 성능 분석 결과 출력 함수
 def print_performance_table(performance_rows) -> None
