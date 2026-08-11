@@ -254,12 +254,36 @@ def print_batch_report(results, summary, performance_rows) -> None:
                 )
 
 # 성능 분석 결과 출력 함수
-def print_performance_table(performance_rows) -> None
+def print_performance_table(performance_rows) -> None:
 
 # 모드 1번 선택시 호출되는 함수
+# 사용자 입력 값 이용해 matrix 구성(default value 3) 및 pettern 구성 -> MAC 결과 측정 및 판정 측정 -> 성능 분석
 def run_manual_mode() -> None:
+    cross_filter = read_matrix("Cross Filter")
+    x_filter = read_matrix("X Filter")
+    print(f"cross_filter: {cross_filter} | x_filter: {x_filter}")
+
+    input_pattern = read_matrix("Pattern")
+
+    score_cross = calculate_mac(pattern=input_pattern, filter_=cross_filter)
+    score_x = calculate_mac(pattern=input_pattern, filter_=x_filter)
+
+    prediction = classify_scores(score_cross=score_cross, score_x=score_x)
+
+    print(
+    f"Cross score: {score_cross} | "
+    f"X score: {score_x} | "
+    f"Prediction: {prediction}"
+    )
+
+    time_result = measure_mac_average_ms(pattern=input_pattern, filter_=cross_filter)
+    n = len(input_pattern)
+    operation_count = n ** 2
+
+    print(f"크기: {n} x {n} | 평균 시간(ms): {time_result:.6f} | 연산 횟수(N²): {operation_count}")
 
 # 모드 2번 선택시 호출되는 함수
+# data.json을 load -> validation -> label normalization -> MAC -> epsilon 기반 판정 -> case pass or fail 계산 -> 결과 요약 계산(total, passed, failed, failure case list) -> 성능 분석 -> 출력
 def run_json_mode(path="data.json") -> None:
     try:
         data = load_json(path=path)
