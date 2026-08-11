@@ -87,6 +87,57 @@ def validate_square_matrix(matrix, expected_n, matrix_name) -> None:
             if type(matrix[i][j]) not in (int, float):
                 raise ValueError(f"{matrix_name}의 Row index: {i}, column index: {j}, value: {matrix[i][j]}의 type이 {type(matrix[i][j])}이기 때문에 검증에 실패했습니다.")
 
+# n값 반환 -> data.json filters dict 정규화 -> matrix 검증 -> MAC -> PASS/FAIL -> 결과 반환
+def analyze_case(case_id, case_data, filters) -> dict:
+    if type(case_data) != dict:
+        raise ValueError(f"{case_id}가 {type(case_data)}의 type이기 때문에 값을 처리할 수 없습니다.")
+
+    n = parse_pattern_size(case_id=case_id)
+    size_key = f"size_{n}"
+
+    # filter_group = data.json의 filters key: size_key
+    filter_group = filters[size_key]
+
+    # pattern = data.json의 patterns case_id의 value
+    pattern = case_data["input"]
+    normalized_filters = {}
+
+    # 정규화 작업후 할당
+    expected_label = normalize_label(case_data["expected"])
+
+    # raw_label: data.json filters의 비정규화 라벨("cross", "x" 등) matrix: filters 2차원 배열
+    # normalized_filters 라벨 정규화 한것을 key, filters 2차원 배열을 value로 정규화한 dict 생성
+    for raw_label, matrix in filter_group.items():
+        normalized_filters[normalize_label(raw_label)] = matrix
+
+    validate_square_matrix(normalized_filters["Cross"], n, "Cross Filter")
+    validate_square_matrix(normalized_filters["X"], n, "X Filter")
+    validate_square_matrix(pattern, n, "Pattern")
+
+    score_cross = calculate_mac(pattern=pattern, filter_=normalized_filters["Cross"])
+    score_x = calculate_mac(pattern=pattern, filter_=normalized_filters["X"])
+    prediction = classify_scores(score_cross=score_cross, score_x=score_x)
+
+    passed = prediction == expected_label
+
+    if passed:
+        status = "PASS"
+        reason = None
+    else:
+        status = "FAIL"
+        reason = f"prediction과 expected_label이 다르다. prediction: {prediction}, expected_label: {expected_label}"
+
+    return {
+        "case_id" : case_id,
+        "score_cross" : score_cross,
+        "score_x" : score_x,
+        "prediction" : prediction,
+        "expected" : expected_label,
+        "passed" : passed,
+        "status" : status,
+        "reason" : reason
+    }
+
 
 def main():
     cross = [
