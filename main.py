@@ -303,29 +303,26 @@ def run_json_mode(path="data.json") -> None:
     print_batch_report(summary=summary, results=results, performance_rows=rows)
 
 def main():
-    cross = [
-        [0, 1, 0],
-        [1, 1, 1],
-        [0, 1, 0]
-    ]
+    menu_text = (
+        "=== Mini NPU Simulator ===\n\n"
+        "[모드 선택]\n\n"
+        "1. 사용자 입력 (3x3)\n"
+        "2. data.json 분석"
+    )
 
-    x_pattern = [
-        [1, 0, 1],
-        [0, 1, 0],
-        [1, 0, 1],
-    ]
+    print(menu_text)
 
-    x_filter = [
-        [1, 0, 1],
-        [0, 1, 0],
-        [1, 0, 1],
-    ]
-
-    x_result = calculate_mac(x_pattern, x_filter)
-    cross_result = calculate_mac(cross, x_filter)
-    print(x_result)
-    print(cross_result)
-
+    while True:
+        choice = input("선택: ")
+        if choice == "1":
+            run_manual_mode()
+            break
+        elif choice == "2":
+            run_json_mode()
+            break
+        else:
+            print("Invalid Value")
+            continue
 
 if __name__ == "__main__":
     main()
