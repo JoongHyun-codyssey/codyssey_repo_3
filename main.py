@@ -1,4 +1,6 @@
 import json
+import time
+
 
 # MAC
 def calculate_mac(pattern, filter_):
@@ -215,7 +217,11 @@ def read_matrix(matrix_name, n=3) -> list[list]:
 
 # 평균 시간(ms) 측정 함수
 def measure_mac_average_ms(pattern, filter_, repeats=10) -> float:
-
+    start = time.perf_counter()
+    for _ in range(repeats):
+        calculate_mac(pattern=pattern, filter_=filter_)
+    end = time.perf_counter()
+    return ((end - start) / repeats) * 1000
 # 성능 분석 함수
 def measure_performance_sizes(sizes=(3, 5, 13, 25), repeats=10) -> list[dict]:
 
