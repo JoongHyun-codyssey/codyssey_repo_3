@@ -138,6 +138,33 @@ def analyze_case(case_id, case_data, filters) -> dict:
         "reason" : reason
     }
 
+# json 구조 검증 -> case 순회하며 결과 수집 -> 수집된 결과 반환
+def analyze_batch(data) -> list[dict]:
+    validate_data_json(data)
+
+    results = []
+    filters = data["filters"]
+    patterns = data["patterns"]
+
+    for (case_id, case_data) in patterns.items():
+        try:
+            result = analyze_case(case_id=case_id, case_data=case_data, filters=filters)
+        except (KeyError, ValueError) as error:
+            result = {
+                "case_id": case_id,
+                "score_cross": None,
+                "score_x": None,
+                "prediction": None,
+                "expected": None,
+                "passed": False,
+                "status": "FAIL",
+                "reason": str(error)
+            }
+
+        results.append(result)
+
+    return results
+
 
 def main():
     cross = [
