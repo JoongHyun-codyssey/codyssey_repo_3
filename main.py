@@ -167,6 +167,27 @@ def analyze_batch(data) -> list[dict]:
 
 # 결과 요약 반환 함수
 def summarize_results(results) -> dict:
+    total_count = len(results)
+    pass_count = 0
+    fail_count = 0
+    failure_cases = []
+
+    for result in results:
+        if result["passed"] == True:
+            pass_count += 1
+        else:
+            fail_count += 1
+            failure_cases.append({
+                "case_id" : result["case_id"],
+                "reason" : result["reason"]
+            })
+
+    return {
+        "total" : total_count,
+        "passed" : pass_count,
+        "failed" : fail_count,
+        "failure_cases" : failure_cases
+    }
 
 # 사용자 입력 받아 matrix 구성 함수
 def read_matrix(matrix_name, n=3) -> list[list]:
