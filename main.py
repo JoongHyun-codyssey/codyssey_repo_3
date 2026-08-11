@@ -212,7 +212,7 @@ def print_batch_report(results, summary, performance_rows) -> None:
             f"expected: {result['expected']} | "
             f"status: {result['status']}"
         )
-        if result["reason"] != None:
+        if result["reason"] is not None:
             print(
                 f"reason: {result['reason']}"
             )
@@ -240,6 +240,16 @@ def run_manual_mode() -> None:
 
 # 모드 2번 선택시 호출되는 함수
 def run_json_mode(path="data.json") -> None:
+    try:
+        data = load_json(path=path)
+        results = analyze_batch(data=data)
+    except (FileNotFoundError, json.JSONDecodeError, ValueError) as error:
+        print(f"{error} 발견하여 안전하게 종료합니다.")
+        return
+
+    summary = summarize_results(results=results)
+    rows = measure_performance_sizes()
+    print_batch_report(summary=summary, results=results, performance_rows=rows)
 
 def main():
     cross = [
