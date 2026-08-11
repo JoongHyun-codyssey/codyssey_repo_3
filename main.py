@@ -1,3 +1,5 @@
+import json
+
 def calculate_mac(pattern, filter_):
     score = 0
 
@@ -33,6 +35,12 @@ def normalize_label(raw_label) -> str:
         return "X"
     else:
         raise ValueError("Invalid label")
+
+def load_json(path) -> dict:
+    with open(path, mode="r", encoding="utf-8") as file:
+        data = json.load(file)
+
+    return data
 
 def main():
     cross = [
