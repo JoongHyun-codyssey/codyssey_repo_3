@@ -222,6 +222,7 @@ def measure_mac_average_ms(pattern, filter_, repeats=10) -> float:
         calculate_mac(pattern=pattern, filter_=filter_)
     end = time.perf_counter()
     return ((end - start) / repeats) * 1000
+
 # 성능 분석 함수
 def measure_performance_sizes(sizes=(3, 5, 13, 25), repeats=10) -> list[dict]:
     performance_rows = []
@@ -234,6 +235,8 @@ def measure_performance_sizes(sizes=(3, 5, 13, 25), repeats=10) -> list[dict]:
             "average_ms": average_ms,
             "operation_count": n ** 2
         })
+
+    return performance_rows
 
 # 평균 시간(ms) 측정 시 matrix 구성 함수
 def create_benchmark_matrix(n) -> list[list]:
@@ -274,6 +277,10 @@ def print_batch_report(results, summary, performance_rows) -> None:
 
 # 성능 분석 결과 출력 함수
 def print_performance_table(performance_rows) -> None:
+    print("크기(N×N) | 평균 시간(ms) | 연산 횟수(N²)")
+
+    for rows in performance_rows:
+        print(f'{rows["n"]}x{rows["n"]} | {rows["average_ms"]:.6f} | {rows["operation_count"]}')
 
 # 모드 1번 선택시 호출되는 함수
 # 사용자 입력 값 이용해 matrix 구성(default value 3) 및 pettern 구성 -> MAC 결과 측정 및 판정 측정 -> 성능 분석
