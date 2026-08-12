@@ -22,6 +22,8 @@ Mini NPU Simulator는 AI의 핵심 연산인 **MAC(Multiply-Accumulate)** 연산
 | Shell | Bash |
 | Version Control | Git / GitHub |
 
+---
+
 # 프로젝트 목표
 
 * MAC(Multiply-Accumulate) 연산 구현
@@ -30,6 +32,37 @@ Mini NPU Simulator는 AI의 핵심 연산인 **MAC(Multiply-Accumulate)** 연산
 * 성능 측정 및 시간 복잡도 분석
 * 예외 처리 및 데이터 검증
 
+---
+
+# 프로젝트 구조
+
+```text
+codyssey_mission_3/
+│
+├── main.py
+├── data.json
+└── README.md
+```
+
+---
+
+# 실행 방법
+
+### 프로그램 실행
+
+```bash
+python3 main.py
+```
+
+실행 후 원하는 모드를 선택합니다.
+
+```
+1. 사용자 입력(3×3)
+
+2. data.json 분석
+
+선택 :
+```
 ---
 
 # 주요 기능
@@ -86,39 +119,7 @@ data.json 파일을 읽어 다음 기능을 수행합니다.
 
 ---
 
-# 프로젝트 구조
-
-```text
-codyssey_mission_3/
-│
-├── main.py
-├── data.json
-└── README.md
-```
-
----
-
-# 실행 방법
-
-### 프로그램 실행
-
-```bash
-python3 main.py
-```
-
-실행 후 원하는 모드를 선택합니다.
-
-```
-1. 사용자 입력(3×3)
-
-2. data.json 분석
-
-선택 :
-```
-
----
-
-# MAC 연산 원리
+# 5. MAC 연산 원리
 
 입력 패턴과 필터를 같은 위치끼리 곱한 후 모든 값을 더합니다.
 
@@ -162,7 +163,7 @@ python3 main.py
 
 ---
 
-# 시간 복잡도
+# 6. 시간 복잡도
 
 MAC 연산은 모든 원소를 한번씩 방문합니다.
 
@@ -186,7 +187,7 @@ O(N²)
 
 ---
 
-# 예외 처리
+# 7. 예외 처리
 
 다음과 같은 상황을 처리합니다.
 
@@ -205,14 +206,14 @@ file/json/top-level schema 오류는 안내 후 해당 mode를 traceback없이 �
 
 ---
 
-# 구현 요약
+# 8. 구현 요약
 ### Mode1
 사용자 입력(3x3) -> cross filter, x filter, pattern순으로 구성합니다 -> MAC -> 판정 -> 연산 평균 시간 -> 결과 출력
 
 ### Mode2
 data.json load -> JSON 구조 검증 -> case_id 및 n 추출 -> label, filters 데이터 정규화 -> NxN matrix 및 값 검증 -> 판정 -> 결과 출력
 
-# 결과 리포트
+# 9. 결과 리포트
 
 ### Mode 1
 1.0/5.0/X를 비교했을때
@@ -270,7 +271,7 @@ data.json load -> JSON 구조 검증 -> case_id 및 n 추출 -> label, filters �
 fixed overhead/noise/10회 평균 해석
 fixed overhead는 모든 측정에 공통으로 더해진다. 또한 10회라는 평균값을 내는 이유는 측정할때마다 매번 동일한 시간 측정을 보장하지 않는다. random noise의 영향으로 인해 매번 값이 달라진다. 이 영향을 완화하기 위해 10회 평균 값을 내어 안정적인 대표값을 만드는 것이다.
 
-## 실패 원인 분석
+## 10. 실패 원인 분석
 3 FAIL의 case_id는 size_5_1, size_13_2, size_25_1가 FAIL의 결과를 받았다.
 3 FAIL은 epsilon tie로 인해 FAIL을 받았다
 
@@ -290,7 +291,7 @@ epsilon = 1e-9
 
 ---
 
-## 성능 분석
+## 11. 성능 분석
 ```bash
 크기(N×N) | 평균 시간(ms) | 연산 횟수(N²)
 3x3 | 0.005446 | 9
