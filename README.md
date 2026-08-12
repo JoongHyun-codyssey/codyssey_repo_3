@@ -206,10 +206,10 @@ file/json/top-level schema 오류는 안내 후 해당 mode를 traceback없이 �
 ---
 
 # 구현 요약
-Mode1
+### Mode1
 사용자 입력(3x3) -> cross filter, x filter, pattern순으로 구성합니다 -> MAC -> 판정 -> 연산 평균 시간 -> 결과 출력
 
-Mode2
+### Mode2
 data.json load -> JSON 구조 검증 -> case_id 및 n 추출 -> label, filters 데이터 정규화 -> NxN matrix 및 값 검증 -> 판정 -> 결과 출력
 
 # 결과 리포트
