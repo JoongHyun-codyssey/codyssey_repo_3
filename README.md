@@ -12,6 +12,16 @@ Mini NPU Simulator는 AI의 핵심 연산인 **MAC(Multiply-Accumulate)** 연산
 
 ---
 
+# 개발환경
+| 항목 | 환경 |
+| --- | --- |
+| OS | macOS |
+| Language | Python 3.13.0 |
+| IDE | PyCharm |
+| Terminal | PyCharm 내장 터미널 |
+| Shell | Bash |
+| Version Control | Git / GitHub |
+
 # 프로젝트 목표
 
 * MAC(Multiply-Accumulate) 연산 구현
@@ -79,18 +89,12 @@ data.json 파일을 읽어 다음 기능을 수행합니다.
 # 프로젝트 구조
 
 ```text
-project/
+codyssey_mission_3/
 │
 ├── main.py
-├── mini_npu.py
-├── matrix.py
-├── performance.py
 ├── data.json
-├── README.md
-└── ...
+└── README.md
 ```
-
-(프로젝트 구조는 실제 파일명에 맞게 수정)
 
 ---
 
@@ -99,7 +103,7 @@ project/
 ### 프로그램 실행
 
 ```bash
-python main.py
+python3 main.py
 ```
 
 실행 후 원하는 모드를 선택합니다.
@@ -160,7 +164,7 @@ python main.py
 
 # 시간 복잡도
 
-MAC 연산은 모든 원소를 한 번씩 방문합니다.
+MAC 연산은 모든 원소를 한번씩 방문합니다.
 
 패턴 크기가 N×N일 때
 
