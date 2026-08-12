@@ -194,14 +194,67 @@ O(N²)
 * 존재하지 않는 size 필터
 * 예상 라벨 오류
 
-오류가 발생하더라도 프로그램은 종료되지 않고 다음 작업을 계속 수행하도록 구현합니다.
+Mode1은 row/token 재입력을 받도록 구현했습니다.
+Mode2는 schema/label/matrix 오류가 발생시 해당 case를 Fail 처리 후 다음 case 검증 진행
+file/json/top-level schema 오류는 안내 후 해당 mode를 traceback없이 안전하게 종료합니다.
+
 
 ---
 
+# 구현 요약
+Mode1은 사용자 입력(3x3) -> cross filter, x filter, pattern순으로 구성합니다 -> MAC -> 판정 -> 연산 평균 시간 -> 결과 출력
+Mode2 data.json 분석
+data.json load -> JSON 구조 검증 -> case_id 및 n 추출 -> label, filters 데이터 정규화 -> NxN matrix 및 값 검증 -> 판정 -> 결과 출력
+
 # 결과 리포트
+Mode 1 결과: 1.0/5.0/X를 비교했을때
+Cross score: 1.0 | X score: 5.0 | Prediction: X
+크기: 3 x 3 | 평균 시간(ms): 0.012554 | 연산 횟수(N²): 9
+와 같은 결과가 나온것으로 보아 정상 출력임을 확인할 수 있고, invalid 결과에 대해선 그 입력 값을 확인해 제대로 된 입력값을 받도록 재입력받도록 했다.
+Mode 2 결과: 3 PASS/3 FAIL의 결과가 나왔다.
+```bash
+case_id: size_5_1 | score_cross: 0.9 | score_x: 0.8999999999999999 | prediction: UNDECIDED | expected: X | status: FAIL
+reason: prediction과 expected_label이 다르다. prediction: UNDECIDED, expected_label: X
+case_id: size_5_2 | score_cross: 8.9 | score_x: 0.1 | prediction: Cross | expected: Cross | status: PASS
+case_id: size_13_1 | score_cross: 0.3 | score_x: 14.700000000000008 | prediction: X | expected: X | status: PASS
+case_id: size_13_2 | score_cross: 7.499999999999997 | score_x: 7.5 | prediction: UNDECIDED | expected: Cross | status: FAIL
+reason: prediction과 expected_label이 다르다. prediction: UNDECIDED, expected_label: Cross
+case_id: size_25_1 | score_cross: 4.9 | score_x: 4.899999999999999 | prediction: UNDECIDED | expected: X | status: FAIL
+reason: prediction과 expected_label이 다르다. prediction: UNDECIDED, expected_label: X
+case_id: size_25_2 | score_cross: 52.9 | score_x: 0.1 | prediction: Cross | expected: Cross | status: PASS
+크기(N×N) | 평균 시간(ms) | 연산 횟수(N²)
+3x3 | 0.005446 | 9
+5x5 | 0.012329 | 25
+13x13 | 0.045883 | 169
+25x25 | 0.138887 | 625
+total: 6 | passed: 3 | failed: 3
+failure_cases: size_5_1 | failure_cases_reason: prediction과 expected_label이 다르다. prediction: UNDECIDED, expected_label: X
+failure_cases: size_13_2 | failure_cases_reason: prediction과 expected_label이 다르다. prediction: UNDECIDED, expected_label: Cross
+failure_cases: size_25_1 | failure_cases_reason: prediction과 expected_label이 다르다. prediction: UNDECIDED, expected_label: X
+```
+
+fixed overhead/noise/10회 평균 해석
+fixed overhead는 모든 측정에 공통으로 더해진다. 또한 10회라는 평균값을 내는 이유는 측정할때마다 매번 동일한 시간 측정을 보장하지 않는다. random noise의 영향으로 인해 매번 값이 달라진다. 이 영향을 완화하기 위해 10회 평균 값을 내어 안정적인 대표값을 만드는 것이다.
 
 ## 실패 원인 분석
+3 FAIL의 case_id는 size_5_1, size_13_2, size_25_1가 FAIL의 결과를 받았다.
+3 FAIL은 epsilon tie로 인해 FAIL을 받았다
+score_cross: 0.9 | score_x: 0.8999999999999999
+score_cross: 7.499999999999997 | score_x: 7.5
+score_cross: 4.9 | score_x: 4.899999999999999
+
+현재 epsilon에서는 거의 같은 score를 UNDECIDED로 처리한다. 지금보다 epsilon 값을 작게 한다 하더라도 FAIL을 받았던 각 case는 expected label과 반대의 경우로 나오기 때문에 epsilon을 변경하더라도 여전히 FAIL이며 epsilon을 정하는 정책으로 인해 너무 작으면 false winner, 너무 크면 false tie의 trade-off가 생긴다. 따라서 PASS 수에 맞춰 임의로 값을 정하면 안된다.
 
 ---
 
 ## 성능 분석
+```bash
+크기(N×N) | 평균 시간(ms) | 연산 횟수(N²)
+3x3 | 0.005446 | 9
+5x5 | 0.012329 | 25
+13x13 | 0.045883 | 169
+25x25 | 0.138887 | 625
+```
+MAC algorithm은 matrix 크기가 NxN일때 연산 횟수는 NxN = N²이다. 그렇기때문에 시간 복잡도는 O(N²)이지만, 실제 측정 시간은 N² 증가 비율과 같지 않을 수 있는 이유는 fixed overhead와 random noise와 관련이 있다. fixed overhead란 모든 함수 호출에 있어 비교적 고정된 시간을, random noise란 실행마다 측정 시간을 흔드는 요인이다. 이 두 가지의 요소로 인해 측정 값이 N² 비율과 정확히 일치하지 않게된다.
+
+그러하여 표를 보면 연산 횟수가 9 -> 25 -> 169 -> 625, 3 -> 5 -> 13 -> 25의 제곱을 형태를 띄기 떄문에 평균 시간도 대체로 증가하는 것을 볼 수 있다. 다만 시간 비율이 N²와 같지 않은 이유는 fixed overhead와 random noise의 영향을 받기 때문이다.
