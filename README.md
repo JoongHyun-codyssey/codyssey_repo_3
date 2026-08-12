@@ -213,8 +213,6 @@ file/json/top-level schema 오류는 안내 후 해당 mode를 traceback없이 �
 ### Mode2
 data.json load -> JSON 구조 검증 -> case_id 및 n 추출 -> label, filters 데이터 정규화 -> NxN matrix 및 값 검증 -> 판정 -> 결과 출력
 
----
-
 # 9. 결과 리포트
 
 ### Mode 1
@@ -348,12 +346,12 @@ NPU simulator 관점에서 이를 개선하기 위해서 알아야 할 최적화
 구조가 만약
 `MAC 1 -> MAC 2 -> MAC 3 -> MAC 4`
 의 형태로 순차처리 방식이라면 NPU는 개념적으로
-`
+```text
 MAC 1 ┐
 MAC 2 ├─ 동시에 처리
 MAC 3 ┤
 MAC 4 ┘
-`
+```
 같은 구조에 가깝다. 따라서 시뮬레이터를 발전시킨다면 PE(Processing Element)개수를 설정하고, 한 cycle에 몇 개의 MAC을 처리할 수 있는지 모델링하는 것이 좋다.
 
 예를들어
@@ -376,24 +374,24 @@ NPU는 Neural Processing Unit의 약자로, 신경망에서 많이 발생하는 
 예를들어 설명하자면
 `1x2 + 2x3 + 3x4 + 4x5`
 와 같은 연산이 대량으로 존재한다면 여러 MAC 연산기를 이용해서 병렬로 처리할 수 있다.
-`
+```text
 MAC Unit 1 → 곱셈 + 누적
 MAC Unit 2 → 곱셈 + 누적
 MAC Unit 3 → 곱셈 + 누적
 MAC Unit 4 → 곱셈 + 누적
              ↓
            결과
-`
+```
 많은 데이터를 연결해서 처리량을 높이는 구조가 핵심이다.
 
 ## CPU와 NPU의 처리 방식 차이에서 생기는 병목현상
 
 ### CPU
-`
+```python
 for i in range(len(pattern)):
     for j in range(len(pattern[i])):
         score += pattern[i][j] * filter_[i][j]
-`
+```
 와 같은 2중 배열이 있고 크기는 1000x1000이면 100만번의 연산이 필요하다.
 
 CPU도 병렬 처리가 가능하지만, 일반적인 Python 반복문에서는 병렬 처리 기능을 충분히 활용하지 못해 반복적으로 실행하게 된다.
@@ -403,7 +401,7 @@ CPU도 병렬 처리가 가능하지만, 일반적인 Python 반복문에서는 
 NPU는 CPU와 반대로 MAC 연산 자체는 굉장히 빠르게 처리할 수 있다.
 MAC 유닛이 1000개 있다고 가정하면 많은 연산을 동시에 처리할 수 있다.
 하지만 여기서 문제가 하나 생긴다.
-`
+```text
 Memory
    ↓ 데이터 공급
 ┌───────────────┐
@@ -411,7 +409,7 @@ Memory
 │ MAC MAC MAC MAC│
 │ MAC MAC MAC MAC│
 └───────────────┘
-`
+```
 MAC 유닛이 아무리 많아도 연산할 데이터를 제때 공급하지 못한다면 MAC 유닛들이 기다려야 한다.
 이를 따져봤을때 NPU는 연산 성능보다는 메모리 대역폭이 병목 현상으로 나타난다.
 즉, 데이터 공급이 느리면 연산 능력이 부족해서 기다리는 것이 아닌 연산 데이터가 공급이 되지 않아서 기다리는 것
