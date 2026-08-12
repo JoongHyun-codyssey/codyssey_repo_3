@@ -320,7 +320,7 @@ NxN 패턴과 필터를 비교하며 각 원소마다 MAC 연산을 한다고 �
 여기서 가장 먼저 예상할 수 있는 병목현상이 있다.
 `Python 반복문`이다.
 
-```
+```python
 for i in range(len(pattern)):
     for j in range(len(pattern[i])):
         score += pattern[i][j] * filter_[i][j]
