@@ -5,14 +5,9 @@ import time
 # MAC
 def calculate_mac(pattern, filter_):
     score = 0
-
     n = len(pattern)
-    if n != len(filter_):
-        raise ValueError("행 수가 맞지 않습니다.")
 
     for i in range(n):
-        if n != len(pattern[i]) or n != len(filter_[i]):
-            raise ValueError("열 수가 맞지 않습니다.")
         for j in range(len(pattern[i])):
             score += pattern[i][j] * filter_[i][j]
 
@@ -54,7 +49,7 @@ def validate_data_json(data) -> None:
     elif not "filters" in data or not "patterns" in data:
         raise ValueError(f"data에 filters key 또는 patterns key가 없습니다.")
     elif type(data["filters"]) != dict or type(data["patterns"]) != dict:
-        raise ValueError(f"filters 또는 patterns value type이 잘못되었습니다. filters value: {type(data["filters"])}, pattern value: {type(data['patterns'])}")
+        raise ValueError(f"filters 또는 patterns value type이 잘못되었습니다. filters value: {type(data['filters'])}, pattern value: {type(data['patterns'])}")
 
 # case_id(size_13_1) n값 반환 함수
 def parse_pattern_size(case_id) -> int:
@@ -218,11 +213,11 @@ def read_matrix(matrix_name, n=3) -> list[list]:
 
 # 평균 시간(ms) 측정 함수
 def measure_mac_average_ms(pattern, filter_, repeats=10) -> float:
-    start = time.perf_counter()
+    start = time.perf_counter_ns()
     for _ in range(repeats):
         calculate_mac(pattern=pattern, filter_=filter_)
-    end = time.perf_counter()
-    return ((end - start) / repeats) * 1000
+    end = time.perf_counter_ns()
+    return ((end - start) / repeats) / 1_000_000
 
 # 성능 분석 함수
 def measure_performance_sizes(sizes=(3, 5, 13, 25), repeats=10) -> list[dict]:
