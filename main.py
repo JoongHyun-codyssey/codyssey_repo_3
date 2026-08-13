@@ -309,6 +309,14 @@ def run_manual_mode() -> None:
 
     print(f"크기: {n} x {n} | 평균 시간(ms): {time_result:.6f} | 연산 횟수(N²): {operation_count}")
 
+    if prediction == "UNDECIDED":
+        print(
+            f"판정 불가\n"
+            f"Cross score: {float(score_cross)} | "
+            f"X score: {float(score_cross)} | "
+            f"판정: {prediction} (|A-B| < 1e-9)"
+        )
+
 # 모드 2번 선택시 호출되는 함수
 # data.json을 load -> validation -> label normalization -> MAC -> epsilon 기반 판정 -> case pass or fail 계산 -> 결과 요약 계산(total, passed, failed, failure case list) -> 성능 분석 -> 출력
 def run_json_mode(path="data.json") -> None:
