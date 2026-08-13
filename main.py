@@ -283,9 +283,9 @@ def print_performance_table(performance_rows) -> None:
 # 모드 1번 선택시 호출되는 함수
 # 사용자 입력 값 이용해 matrix 구성(default value 3) 및 pettern 구성 -> MAC 결과 측정 및 판정 측정 -> 성능 분석
 def run_manual_mode() -> None:
-    cross_filter = read_matrix("Cross Filter")
-    x_filter = read_matrix("X Filter")
-    print(f"cross_filter: {cross_filter} | x_filter: {x_filter}")
+    cross_filter = read_matrix("A Filter")
+    x_filter = read_matrix("B Filter")
+    print(f"A_Filter: {cross_filter} | B_Filter: {x_filter}")
 
     input_pattern = read_matrix("Pattern")
 
@@ -295,8 +295,8 @@ def run_manual_mode() -> None:
     prediction = classify_scores(score_cross=score_cross, score_x=score_x)
 
     print(
-    f"Cross score: {score_cross} | "
-    f"X score: {score_x} | "
+    f"A score: {score_cross} | "
+    f"B score: {score_x} | "
     f"Prediction: {prediction}"
     )
 
@@ -309,9 +309,9 @@ def run_manual_mode() -> None:
     if prediction == "UNDECIDED":
         print(
             f"판정 불가\n"
-            f"Cross score: {float(score_cross)} | "
-            f"X score: {float(score_cross)} | "
-            f"판정: {prediction} (|A-B| < 1e-9)"
+            f"A score: {float(score_cross)} | "
+            f"B score: {float(score_cross)} | "
+            f"판정: 판정불가 (|A-B| < 1e-9)"
         )
 
 # 모드 2번 선택시 호출되는 함수
