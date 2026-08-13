@@ -27,11 +27,13 @@ def normalize_label(raw_label) -> str:
     if not isinstance(raw_label, str):
         raise ValueError(f"Invalid label: {raw_label}")
 
+    label = raw_label.lower()
+
     if raw_label == "+":
         return "Cross"
-    elif raw_label.lower() == "cross":
+    elif label == "cross":
         return "Cross"
-    elif raw_label.lower() == "x":
+    elif label == "x":
         return "X"
     else:
         raise ValueError("Invalid label")
