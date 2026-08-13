@@ -19,7 +19,7 @@ def calculate_mac(pattern, filter_):
     return float(score)
 
 # 판정
-def classify_scores(score_cross, score_x, epsilon) -> str:
+def classify_scores(score_cross, score_x, epsilon=1e-9) -> str:
     if abs(score_cross - score_x) < epsilon:
         return "UNDECIDED"
     elif score_cross > score_x:
@@ -96,6 +96,7 @@ def analyze_case(case_id, case_data, filters) -> dict:
 
     n = parse_pattern_size(case_id=case_id)
     size_key = f"size_{n}"
+    print(f"{size_key} 필터 로드 완료")
 
     # filter_group = data.json의 filters key: size_key
     filter_group = filters[size_key]
@@ -175,7 +176,7 @@ def summarize_results(results) -> dict:
     failure_cases = []
 
     for result in results:
-        if result["passed"] == True:
+        if result["passed"]:
             pass_count += 1
         else:
             fail_count += 1
@@ -260,20 +261,20 @@ def print_batch_report(results, summary, performance_rows) -> None:
                 f"reason: {result['reason']}"
             )
 
-        print_performance_table(performance_rows=performance_rows)
+    print_performance_table(performance_rows=performance_rows)
 
-        print(
+    print(
             f"total: {summary['total']} | "
             f"passed: {summary['passed']} | "
             f"failed: {summary['failed']}"
-        )
+    )
 
-        if len(summary["failure_cases"]) != 0:
-            for failure in summary["failure_cases"]:
-                print(
-                    f"failure_cases: {failure['case_id']} | "
-                    f"failure_cases_reason: {failure['reason']}"
-                )
+    if len(summary["failure_cases"]) != 0:
+        for failure in summary["failure_cases"]:
+            print(
+                f"failure_cases: {failure['case_id']} | "
+                f"failure_cases_reason: {failure['reason']}"
+            )
 
 # 성능 분석 결과 출력 함수
 def print_performance_table(performance_rows) -> None:
