@@ -307,14 +307,6 @@ fixed overhead는 모든 측정에 공통으로 더해진다. 또한 10회라는
 그리고 size_5_1의 "expected"는 "x"이다. 그렇기때문에 "cross"의 가운데 값을 0.9가 아닌 1.0으로 했다면 Cross의 점수가 명확하게 나올 수 있다.
 하지만, 0.9라는 값을 사용하면서 "Cross"와 "X"의 최종 점수가 거의 동일한 상황이 나왔다.
 
-```
-epsilon = 1e-9
-```
-
-현재 epsilon에서는 거의 같은 score를 UNDECIDED로 처리한다.
-지금보다 epsilon 값을 작게 한다 하더라도 FAIL을 받았던 각 case는 expected label과 반대의 경우로 나오기 때문에 epsilon을 변경하더라도 여전히 FAIL이며 epsilon을 정하는 정책으로 인해 너무 작으면 false winner, 너무 크면 false tie의 trade-off가 생긴다.
-따라서 PASS 수에 맞춰 임의로 값을 정하면 안된다.
-
 ---
 
 # 11. 성능 분석
