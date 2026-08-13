@@ -93,7 +93,6 @@ def analyze_case(case_id, case_data, filters) -> dict:
 
     n = parse_pattern_size(case_id=case_id)
     size_key = f"size_{n}"
-    print(f"{size_key} 필터 로드 완료")
 
     # filter_group = data.json의 filters key: size_key
     filter_group = filters[size_key]
@@ -145,6 +144,9 @@ def analyze_batch(data) -> list[dict]:
     results = []
     filters = data["filters"]
     patterns = data["patterns"]
+
+    for filter_name, filter_data in filters.items():
+        print(f"{filter_name} 로드 완료")
 
     for (case_id, case_data) in patterns.items():
         try:
