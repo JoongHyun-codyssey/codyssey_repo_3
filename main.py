@@ -13,7 +13,7 @@ def calculate_mac(pattern, filter_):
 
     return float(score)
 
-# 판정
+# mode2 판정
 def classify_scores(score_cross, score_x, epsilon=1e-9) -> str:
     if abs(score_cross - score_x) < epsilon:
         return "UNDECIDED"
@@ -21,6 +21,15 @@ def classify_scores(score_cross, score_x, epsilon=1e-9) -> str:
         return "Cross"
     else:
         return "X"
+
+# mode1 판정
+def classify_ab_scores(score_a, score_b, epsilon=1e-9) -> str:
+    if abs(score_a - score_b) < epsilon:
+        return "UNDECIDED"
+    elif score_a > score_b:
+        return "A"
+    else:
+        return "B"
 
 # 라벨 정규화
 def normalize_label(raw_label) -> str:
@@ -285,24 +294,24 @@ def print_performance_table(performance_rows) -> None:
 # 모드 1번 선택시 호출되는 함수
 # 사용자 입력 값 이용해 matrix 구성(default value 3) 및 pettern 구성 -> MAC 결과 측정 및 판정 측정 -> 성능 분석
 def run_manual_mode() -> None:
-    cross_filter = read_matrix("A Filter")
-    x_filter = read_matrix("B Filter")
-    print(f"A_Filter: {cross_filter} | B_Filter: {x_filter}")
+    a_filter = read_matrix("A Filter")
+    b_filter = read_matrix("B Filter")
+    print(f"A_Filter: {a_filter} | B_Filter: {b_filter}")
 
     input_pattern = read_matrix("Pattern")
 
-    score_cross = calculate_mac(pattern=input_pattern, filter_=cross_filter)
-    score_x = calculate_mac(pattern=input_pattern, filter_=x_filter)
+    score_a = calculate_mac(pattern=input_pattern, filter_=a_filter)
+    score_b = calculate_mac(pattern=input_pattern, filter_=b_filter)
 
-    prediction = classify_scores(score_cross=score_cross, score_x=score_x)
+    prediction = classify_ab_scores(score_a=score_a, score_b=score_b)
 
     print(
-    f"A score: {score_cross} | "
-    f"B score: {score_x} | "
+    f"A score: {score_a} | "
+    f"B score: {score_b} | "
     f"Prediction: {prediction}"
     )
 
-    time_result = measure_mac_average_ms(pattern=input_pattern, filter_=cross_filter)
+    time_result = measure_mac_average_ms(pattern=input_pattern, filter_=a_filter)
     n = len(input_pattern)
     operation_count = n ** 2
 
@@ -311,8 +320,8 @@ def run_manual_mode() -> None:
     if prediction == "UNDECIDED":
         print(
             f"판정 불가\n"
-            f"A score: {float(score_cross)} | "
-            f"B score: {float(score_cross)} | "
+            f"A score: {float(score_a)} | "
+            f"B score: {float(score_b)} | "
             f"판정: 판정불가 (|A-B| < 1e-9)"
         )
 
